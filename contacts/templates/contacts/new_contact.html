@@ -1,0 +1,17 @@
+{% extends "contacts/layout.html" %}
+
+{% block body%}
+
+    <h1>Add a new contact</h1>
+    <form action="{% url 'new_contact' %}" method="post" >
+        {% csrf_token %}
+        <h2>Name: </h2> <input type="text" name="name"> </br>
+        <h2>Mobile_no: </h2> <input type="number" name="mobile_no" maxlength="10"> </br>
+        <h2>Email: </h2> <input type="text" name="email"> </br>
+        <input type="submit" >
+    </form>
+
+    {% if saved %}
+        <div>{{ saved }}</div>
+    {% endif %}
+{% endblock %}
