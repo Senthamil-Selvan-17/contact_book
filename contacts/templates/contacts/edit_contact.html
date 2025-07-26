@@ -1,0 +1,27 @@
+{% extends "contacts/layout.html" %}
+
+{% block body %}    
+    <h1>Edit a contact</h1>
+    <div>Choose a contact to edit</div>
+    <form action="{% url 'edit_contact' %}" method="post">
+        {% csrf_token %} 
+        <select name="contact">
+            {% for contact in contacts %}
+                <option value="{{ contact.id }}">{{ contact.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" name="form1" value="Select">
+    </form>
+
+    {% if contact %}
+        <div>Edit the details</div>
+        <form action="{% url 'edit_contact' %}" method="post" >
+            {% csrf_token %}
+            <h2>Name: </h2> <input type="text" name="name" value="{{ contact.name }}"> </br>
+            <h2>Mobile_no: </h2> <input type="number" name="mobile_no" value="{{ contact.mobile_no }}"> </br>
+            <h2>Email: </h2> <input type="text" name="email" value="{{ contact.email }}"> </br>
+            <input type="hidden" name="id" value="{{ contact.id }}">
+            <input type="submit"  name="form2" value="Update">
+        </form>
+    {% endif %}
+{% endblock %}

@@ -3,7 +3,9 @@
 {% block body%}
 
     <h1>Contacts</h1>
-    <a href="{% url 'new_contact' %}">Add New contacts</a></br>
-    <a href="{% url 'show_contact'%}">Show all contacts</a> 
+    <a href="{% url 'show_contact' %}">Show all contacts</a></br>
+    <a href="{% url 'new_contact' %}">Add new contact</a></br>
+    <a href="{% url 'edit_contact' %}">Edit an existing contact</a></br>
+    <a href="{% url 'delete_contact' %}">Delete a contact</a>
 
 {% endblock %}

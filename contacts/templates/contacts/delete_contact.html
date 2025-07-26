@@ -1,0 +1,16 @@
+{% extends 'contacts/index.html' %}
+
+{% block body %}
+    <h1>Delete a contact</h1>
+    <div>Select a contact to delete</div>
+    <form action="{% url 'delete_contact' %}" method="post">
+        {% csrf_token %}
+        <select name="contact" >
+            {% for contact in contacts %}
+            <option value="{{ contact.id }}">{{ contact.name }}</option>    
+            {% endfor %}  
+        </select>
+        <input type="submit" >    
+    </form>             
+    
+{% endblock %}          
