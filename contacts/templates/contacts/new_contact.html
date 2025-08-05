@@ -2,16 +2,15 @@
 
 {% block body%}
 
-    <h1>Add a new contact</h1>
-    <form action="{% url 'new_contact' %}" method="post" >
+    <h2> {{ form.instance.pk|yesno:"Edit contact, Add contact" }}</h2>  
+    <!-- form.instance create a empty object with fields .pk give value for the fields for the particular id or pk -->
+    <!-- yesno:"A,B" is django template filter -->
+    <!-- if object has pk then it is true ,a will execute else b(add contact will execute)  -->
+    <form method="post">
         {% csrf_token %}
-        <h2>Name: </h2> <input type="text" name="name"> </br>
-        <h2>Mobile_no: </h2> <input type="number" name="mobile_no" maxlength="10"> </br>
-        <h2>Email: </h2> <input type="text" name="email"> </br>
-        <input type="submit" >
+        {{ form.as_p }}  <!-- it submit each field wrapped with <p> tag-->
+        <button type="submit">Save</button>
+        <a href="{% url 'index' %}">Cancel</a>
     </form>
 
-    {% if saved %}
-        <div>{{ saved }}</div>
-    {% endif %}
 {% endblock %}

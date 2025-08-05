@@ -1,60 +1,45 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect #redirect is simple step for httpresponseredirect and reverse
 from .models import Contact
+from .form import ContactForm
 from django.urls import reverse
 
 
 # Create your views here.
 
 def index(request):
-    return render(request, "contacts/index.html")
-
-def new_contact(request):
-    if request.method == 'POST':
-        name = request.POST['name']
-        mobile_no = request.POST["mobile_no"]
-        email = request.POST["email"]
-
-        Contact.objects.create(name=name, mobile_no=mobile_no, email=email)
-        return render(request, "contacts/new_contact.html", {
-            "saved": "Contact saved"
-        })
-
-    return render(request, "contacts/new_contact.html")
-
-def show_contact(request):
-    all_contacts = Contact.objects.all()
-    return render(request, "contacts/show_contact.html", {
+    all_contacts = Contact.objects.all().order_by('name')  #order by is like in sql 
+    return render(request, "contacts/index.html",{
         "all_contacts": all_contacts
     })
 
-def delete_contact(request):
-    if request.method == 'POST':
-        Contact.objects.get(pk = int(request.POST["contact"])).delete()
-        return HttpResponseRedirect(reverse('show_contact'))
-    
-    return render(request, "contacts/delete_contact.html",{
-        "contacts": Contact.objects.all()
+def new_contact(request):
+    form = ContactForm(request.POST or None)  #in this if request is get, it gives empty form, if request is POST, the form becomes data with user input 
+    if form.is_valid():
+        form.save()
+        return redirect('index')
+    return render(request, "contacts/new_contact.html",{
+        "form" : form
     })
 
-def edit_contact(request):
-    if request.method == "POST":
-        if 'form1' in request.POST:
-            contact = Contact.objects.get(pk = int(request.POST["contact"]))
-            return render(request, "contacts/edit_contact.html",{
-                "contact":contact
-            })
-        elif 'form2' in request.POST:
-            new_name = request.POST['name']
-            new_mobile_no = request.POST["mobile_no"]
-            new_email = request.POST["email"]
-            edit_contact = Contact.objects.get(pk = int(request.POST["id"]))
-            edit_contact.name = new_name
-            edit_contact.mobile_no = new_mobile_no
-            edit_contact.email = new_email
-            edit_contact.save()
-            return HttpResponseRedirect(reverse('show_contact'))
-        
-    return render(request, "contacts/edit_contact.html",{
-        "contacts": Contact.objects.all()
+def edit_contact(request, pk):
+    contact = Contact.objects.get(pk = pk)
+    form = ContactForm(request.POST or None, instance=contact) #here, instace help to prefill the form with pk's object data
+                                                            #so it dont come as empty form and we can edit the form 
+    if form.is_valid():
+        form.save()
+        return redirect('index')
+    return render(request, "contacts/new_contact.html",{
+        "form": form
     })
+
+def delete_contact(request, pk):
+    contact = Contact.objects.get(pk = pk)
+    if request.method == 'POST':
+        contact.delete()
+        return HttpResponseRedirect(reverse('index'))
+    
+    return render(request, "contacts/delete_contact.html",{
+        "contact": contact
+    })
+
